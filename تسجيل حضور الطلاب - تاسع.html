@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل حضور الطلاب</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* أنماط CSS من ردك السابق - بدون تغيير */
+    :root {
+      --bg-color: #1a1a2e;
+      --surface-color: #16213e;
+      --surface-variant: #0f3460;
+      --primary-text-color: #e0e0e0;
+      --secondary-text-color: #b0b0b0;
+      --accent-color: #00a8cc;
+      --accent-hover-color: #0088a8;
+      --accent-focus-shadow: rgba(0, 168, 204, 0.5);
+      --error-color: #e94560;
+      --error-hover-color: #d13550;
+      --error-rgb: 233, 69, 96;
+      --border-color: #2a3a5e;
+      --input-bg-color: #1f2d4a;
+      --input-border-color: #3a4a6e;
+      --button-text-color: #ffffff;
+      --success-color: #2dca8c;
+      --scrollbar-track-color: #1a1a2e;
+      --scrollbar-thumb-color: #3a4a6e;
+    }
+    body.light-theme {
+      --bg-color: #f4f6f9;
+      --surface-color: #ffffff;
+      --surface-variant: #e9ecef;
+      --primary-text-color: #212529;
+      --secondary-text-color: #5a6572;
+      --accent-color: #007bff;
+      --accent-hover-color: #0056b3;
+      --accent-focus-shadow: rgba(0, 123, 255, 0.5);
+      --error-color: #dc3545;
+      --error-hover-color: #c82333;
+      --error-rgb: 220, 53, 69;
+      --border-color: #dee2e6;
+      --input-bg-color: #f8f9fa;
+      --input-border-color: #ced4da;
+      --button-text-color: #ffffff;
+      --success-color: #28a745;
+      --scrollbar-track-color: #f1f1f1;
+      --scrollbar-thumb-color: #ced4da;
+     }
+    body {
+      background-color: var(--bg-color); color: var(--primary-text-color); font-family: 'Tajawal', sans-serif;
+      min-height: 100vh; margin: 0; padding: 1rem 0; transition: background-color 0.3s ease, color 0.3s ease;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    .auth-container, .class-container, .attendance-container {
+      width: 92%; margin: 1rem auto; padding: 1.5rem 2rem; background-color: var(--surface-color);
+      border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+    .auth-container { max-width: 420px; }
+    .class-container { max-width: 480px; } /* يمكن أن يكون أوسع قليلاً ليناسب المزيد من الأزرار */
+    .attendance-container { max-width: 600px; }
+    .app-header { text-align: center; margin-bottom: 1.5rem; position: relative; }
+    .app-title { font-size: 1.6rem; font-weight: 700; color: var(--primary-text-color); margin-bottom: 0.3rem;}
+    .app-subtitle { font-size: 0.95rem; color: var(--secondary-text-color); margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--secondary-text-color); }
+    .form-input {
+      width: 100%; padding: 0.8rem 1rem; background-color: var(--input-bg-color);
+      border: 1px solid var(--input-border-color); border-radius: 10px; color: var(--primary-text-color);
+      font-size: 1rem; transition: all 0.3s ease;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px var(--accent-focus-shadow); }
+    .btn {
+      display: inline-block; padding: 0.8rem 1.5rem; border-radius: 10px; font-weight: 600;
+      font-size: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;
+      border: none; width: 100%;
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed !important; transform: none !important; box-shadow: none !important; }
+    .btn-primary { background-color: var(--accent-color); color: var(--button-text-color); }
+    .btn-primary:hover:not(:disabled) { background-color: var(--accent-hover-color); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 168, 204, 0.2); }
+    .btn-danger { background-color: var(--error-color); color: var(--button-text-color); }
+    .btn-danger:hover:not(:disabled) { background-color: var(--error-hover-color); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(233, 69, 96, 0.2); }
+    .btn-secondary { background-color: var(--surface-variant); color: var(--primary-text-color); }
+    .btn-secondary:hover:not(:disabled) { background-color: var(--input-bg-color); transform: translateY(-2px); }
+    .class-btn {
+      display: block; width: 100%; padding: 1.1rem; margin-bottom: 1rem;
+      background-color: var(--surface-variant); border: 1px solid var(--border-color); border-radius: 12px;
+      color: var(--primary-text-color); font-weight: 600; font-size: 1.05rem;
+      text-align: center; cursor: pointer; transition: all 0.3s ease;
+    }
+    .class-btn:hover:not(:disabled) {
+      background-color: var(--accent-color); color: var(--button-text-color);
+      transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 168, 204, 0.2); border-color: var(--accent-color);
+     }
+    .student-list {
+      max-height: 350px; overflow-y: auto; margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color); border-radius: 12px;
+      background-color: var(--bg-color); padding: 0.5rem; min-height: 150px;
+      display: flex; flex-direction: column;
+    }
+    .student-item {
+      display: flex; align-items: center; padding: 0.9rem;
+      margin-bottom: 0.5rem; background-color: var(--surface-color); border-radius: 10px;
+      transition: all 0.2s ease; cursor: pointer;
+    }
+    .student-item:last-child { margin-bottom: 0; }
+    .student-item:hover { background-color: var(--surface-variant); }
+    .student-checkbox {
+      flex-shrink: 0; width: 18px; height: 18px; margin-left: 1rem; 
+      accent-color: var(--accent-color); cursor: pointer;
+    }
+    .student-name { flex-grow: 1; font-size: 1rem; color: var(--primary-text-color); cursor: pointer; }
+    .hidden { display: none !important; }
+    .text-center { text-align: center; }
+    .mt-3 { margin-top: 1.5rem; }
+    .error-text { color: var(--error-color); display: none; font-size: 0.9rem;}
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--scrollbar-track-color); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb-color); border-radius: 10px; }
+    .theme-toggle {
+      position: fixed; top: 20px; inset-inline-start: 20px; 
+      width: 40px; height: 40px; border-radius: 50%; background-color: var(--surface-variant);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      z-index: 100; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease; font-size: 1.2rem;
+    }
+    .theme-toggle:hover { transform: scale(1.1) rotate(15deg); }
+    .loading-container { padding: 3rem 1rem; text-align: center; margin: auto; }
+    .loading-spinner {
+      display: block; width: 40px; height: 40px; border: 4px solid var(--border-color);
+      border-radius: 50%; border-top-color: var(--accent-color); 
+      animation: spin 1s ease-in-out infinite; margin: 0 auto 1rem auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .swal2-popup { background-color: var(--surface-color) !important; color: var(--primary-text-color) !important; border: 1px solid var(--border-color) !important; border-radius: 12px !important; font-family: 'Tajawal', sans-serif !important; }
+    .swal2-title { color: var(--primary-text-color) !important; font-weight: 600;}
+    .swal2-html-container, .swal2-content { color: var(--secondary-text-color) !important; }
+    .swal2-confirm { background-color: var(--accent-color) !important; }
+    .swal2-cancel { background-color: var(--surface-variant) !important; color: var(--primary-text-color) !important; }
+    .swal2-confirm, .swal2-cancel, .swal2-deny { border-radius: 8px !important; }
+  </style>
+</head>
+<body>
+
+  <div class="theme-toggle" id="themeToggle" title="تبديل المظهر">
+    <span id="themeIcon">☀️</span>
+  </div>
+
+  <div class="auth-container" id="loginContainer">
+    <div class="app-header">
+      <h1 class="app-title">نظام الحضور الإلكتروني</h1>
+      <p class="app-subtitle">سجل دخولك لإدارة حضور الطلاب</p>
+    </div>
+     <form id="loginForm">
+      <div class="form-group">
+        <label for="password" class="form-label">كلمة المرور</label>
+        <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
+      </div>
+       <button type="submit" class="btn btn-primary" id="loginBtn">تسجيل الدخول</button>
+       <div id="loginError" class="error-text text-center mt-3"></div>
+    </form>
+  </div>
+
+  <div class="class-container hidden" id="classSelectionContainer">
+     <div class="app-header">
+      <h1 class="app-title">اختر الصف</h1>
+      <p class="app-subtitle">حدد الصف الذي تريد تسجيل حضوره</p>
+    </div>
+    <!--  الأزرار الجديدة للصفوف. يجب أن تتطابق data-classname مع أسماء الأوراق في GAS -->
+    <button class="class-btn" data-classname="عاشر أ">عاشر أ</button>
+    <button class="class-btn" data-classname="عاشر ب">عاشر ب</button>
+    <button class="class-btn" data-classname="عاشر ج">عاشر ج</button>
+    <button class="class-btn" data-classname="عاشر د">عاشر د</button>
+    <button class="class-btn" data-classname="عاشر ه">عاشر ه</button>
+    
+    <button type="button" class="btn btn-secondary mt-3" id="backToLoginBtn">العودة لتسجيل الدخول</button>
+  </div>
+
+  <div class="attendance-container hidden" id="attendanceContainer">
+    <div class="app-header">
+      <h1 class="app-title" id="attendanceTitle">تسجيل حضور الطلاب</h1>
+      <p class="app-subtitle" id="attendanceSubtitle">حدد الطلاب الحاضرين</p>
+    </div>
+    <form id="attendanceForm"> 
+      <div class="student-list" id="studentList"></div>
+      <input type="hidden" name="className" id="classNameInput"> 
+      <button type="submit" class="btn btn-primary" id="submitAttendanceBtn" disabled>تأكيد الحضور</button>
+      <button type="button" class="btn btn-danger mt-3" id="backToClassSelectBtn">الخروج من الصف</button>
+    </form> 
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwEbovaq4-40tzKScmuW6dM-ajlIg-XL9DXJ7xuZNNyCytLHOw9sqMnchlpE1uXjbIt/exec"; // <<< ألصق هنا عنوان URL بعد نشر GAS
+    const PRESENT_MARKER_VALUE = "حاضر"; 
+
+    // تعريف أسماء الصفوف كما هي في CLASS_SHEET_NAMES في GAS وفي data-classname على الأزرار
+    // هذا الكائن ليس ضروريًا للتشغيل الآن، لكنه مفيد للرجوع إليه
+    const APP_CLASS_NAMES = {
+        CLASS_1: 'عاشر أ',
+        CLASS_2: 'عاشر ب',
+        CLASS_3: 'عاشر ج',
+        CLASS_4: 'عاشر د',
+        CLASS_5: 'عاشر ه'
+    };
+
+    const loginContainer = document.getElementById('loginContainer');
+    const classSelectionContainer = document.getElementById('classSelectionContainer');
+    const attendanceContainer = document.getElementById('attendanceContainer');
+    const loginForm = document.getElementById('loginForm');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginErrorDiv = document.getElementById('loginError');
+    const backToLoginBtn = document.getElementById('backToLoginBtn');
+    const studentListDiv = document.getElementById('studentList');
+    const attendanceForm = document.getElementById('attendanceForm');
+    const classNameHiddenInput = document.getElementById('classNameInput');
+    const submitAttendanceBtn = document.getElementById('submitAttendanceBtn');
+    const backToClassSelectBtn = document.getElementById('backToClassSelectBtn');
+    const attendanceTitle = document.getElementById('attendanceTitle');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    let currentSelectedClassName = null;
+    
+    const applyTheme = (theme) => {
+      if (theme === 'light') {
+         document.body.classList.add('light-theme');
+         themeIcon.textContent = '🌙'; 
+      } else {
+         document.body.classList.remove('light-theme');
+         themeIcon.textContent = '☀️'; 
+      }
+      localStorage.setItem('attendance_theme', theme);
+    };
+    const toggleTheme = () => {
+      const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    };
+    const initializeTheme = () => {
+      applyTheme(localStorage.getItem('attendance_theme') || 'dark');
+    };
+    themeToggle.addEventListener('click', toggleTheme);
+
+    function showScreen(screenToShow) {
+        loginContainer.classList.add('hidden');
+        classSelectionContainer.classList.add('hidden');
+        attendanceContainer.classList.add('hidden');
+        if (screenToShow === 'login') {
+            loginContainer.classList.remove('hidden'); passwordInput.value = ''; showLoginError(null); 
+            currentSelectedClassName = null; document.title = "تسجيل الدخول"; setTimeout(() => passwordInput.focus(), 50);
+        } else if (screenToShow === 'classSelection') {
+            classSelectionContainer.classList.remove('hidden'); document.title = "اختر الصف";
+        } else if (screenToShow === 'app' && currentSelectedClassName) {
+            attendanceContainer.classList.remove('hidden'); attendanceTitle.textContent = `تسجيل حضور - ${currentSelectedClassName}`;
+            document.title = `حضور - ${currentSelectedClassName}`; classNameHiddenInput.value = currentSelectedClassName; 
+            fetchStudentList(currentSelectedClassName);
+        }
+        console.log(`UI: Showing ${screenToShow}`);
+    }
+    function showLoginError(message) { loginErrorDiv.textContent = message; loginErrorDiv.style.display = message ? 'block' : 'none'; }
+    function getLoadingIndicatorHTML() { return `<div class="loading-container text-center" id="loadingIndicator"><div class="loading-spinner"></div><p>جاري التحميل...</p></div>`; }
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault(); const password = passwordInput.value.trim();
+        if (!password) { showLoginError("الرجاء إدخال كلمة المرور."); return; }
+        loginBtn.disabled = true; loginBtn.textContent = "جاري التحقق..."; showLoginError(null);
+        const formData = new FormData(); formData.append('action', 'login'); formData.append('password', password);
+        fetch(scriptURL, { method: 'POST', body: formData })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') { showScreen('classSelection'); } 
+                else { showLoginError(data.error || 'فشل تسجيل الدخول.'); passwordInput.value = ""; passwordInput.focus(); }
+            })
+            .catch(error => { console.error('Login fetch error:', error); showLoginError('حدث خطأ بالشبكة.'); })
+            .finally(() => { loginBtn.disabled = false; loginBtn.textContent = "تسجيل الدخول"; });
+    });
+
+    classSelectionContainer.addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('class-btn') && e.target.dataset.classname) {
+            currentSelectedClassName = e.target.dataset.classname;
+            // التحقق إذا كان اسم الصف ضمن الأسماء المعتمدة (اختياري، لأن GAS سيتحقق أيضًا)
+            if (Object.values(APP_CLASS_NAMES).includes(currentSelectedClassName)) {
+                 showScreen('app');
+            } else {
+                 console.warn(`Selected class name "${currentSelectedClassName}" not in defined APP_CLASS_NAMES. Proceeding anyway.`);
+                 showScreen('app'); // أو عرض رسالة خطأ إذا أردت تدقيقًا صارمًا من جانب العميل
+            }
+        }
+    });
+    backToLoginBtn.addEventListener('click', () => {
+       Swal.fire({ title: 'العودة لتسجيل الدخول؟', icon: 'question', showCancelButton: true, confirmButtonText: 'نعم', cancelButtonText: 'إلغاء' })
+       .then((result) => { if (result.isConfirmed) { showScreen('login'); } });
+    });
+    backToClassSelectBtn.addEventListener('click', () => {
+        Swal.fire({ title: 'الخروج من الصف؟', text: 'هل أنت متأكد؟', icon: 'warning', showCancelButton: true, confirmButtonText: 'نعم، خروج', cancelButtonText: 'إلغاء'})
+        .then((result) => { if (result.isConfirmed) { showScreen('classSelection'); } });
+    });
+
+    async function fetchStudentList(className) {
+      studentListDiv.innerHTML = getLoadingIndicatorHTML(); submitAttendanceBtn.disabled = true;
+      const url = `${scriptURL}?action=getStudents&className=${encodeURIComponent(className)}`;
+      console.log("Fetching student list from:", url);
+      try {
+        const response = await fetch(url);
+        if (!response.ok) { const errorText = await response.text(); console.error("Server response error text:", errorText); throw new Error(`خطأ بالشبكة: ${response.statusText} (${response.status}).`); }
+        const data = await response.json();
+        if (data.result === "success" && Array.isArray(data.students)) { renderStudentList(data.students); } 
+        else { throw new Error(data.error || `فشل جلب طلاب الصف ${className}.`); }
+      } catch (error) {
+        console.error("Error fetching student list!", error);
+        studentListDiv.innerHTML = `<div class="text-center" style="padding: 2rem;"><p style="color: var(--error-color); margin-bottom: 0.5rem;">فشل تحميل قائمة الطلاب.</p><small style="color: var(--secondary-text-color);">${error.message}</small></div>`;
+        submitAttendanceBtn.disabled = true;
+      }
+    }
+    function renderStudentList(students) {
+        studentListDiv.innerHTML = ""; 
+        if (!students || students.length === 0) {
+            studentListDiv.innerHTML = '<p style="padding: 2rem; text-align:center; margin: auto;">لا يوجد طلاب مسجلين في هذا الصف.</p>';
+            submitAttendanceBtn.disabled = true; return;
+        }
+        students.forEach((studentName, index) => {
+            if (!studentName || String(studentName).trim() === "") return; 
+            studentName = String(studentName).trim();
+            const safeIdSuffix = studentName.replace(/[^a-zA-Z0-9\u0600-\u06FF_-]/g, "_") + "_" + index;
+            const elementId = `student-${safeIdSuffix}`; const formElementName = `student_${studentName}`; 
+            const studentItem = document.createElement('div'); studentItem.className = 'student-item';
+            studentItem.innerHTML = `<input type="checkbox" class="student-checkbox" id="${elementId}" name="${formElementName}" value="${PRESENT_MARKER_VALUE}"><label for="${elementId}" class="student-name">${studentName}</label>`;
+            studentItem.addEventListener('click', (e) => { if (e.target.type !== 'checkbox'){ const checkbox = studentItem.querySelector('.student-checkbox'); if(checkbox) checkbox.checked = !checkbox.checked; }});
+            studentListDiv.appendChild(studentItem);
+        });
+        submitAttendanceBtn.disabled = false;
+    }
+
+    attendanceForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const checkedStudents = attendanceContainer.querySelectorAll('.student-checkbox:checked');
+      if (checkedStudents.length === 0) { Swal.fire('تنبيه', 'الرجاء تحديد طالب واحد على الأقل.', 'warning'); return; }
+      submitAttendanceBtn.disabled = true; submitAttendanceBtn.textContent = 'جاري الإرسال...';
+      const formData = new FormData(attendanceForm); formData.append('action', 'recordAttendance');
+      fetch(scriptURL, { method: "POST", body: formData })
+        .then(response => { 
+           if (!response.ok) { return response.text().then(text => { console.error("Server error text on submit:", text); throw new Error(`فشل الشبكة: ${response.status}`); }); }
+           return response.json();
+         })
+        .then((data) => {
+           if (data.result === "success") { Swal.fire('تم بنجاح!', data.message || `تم تسجيل الحضور.`, 'success'); checkedStudents.forEach(cb => cb.checked = false); } 
+           else { Swal.fire('خطأ', data.error || 'فشل إرسال الحضور.', 'error'); }
+        })
+        .catch((error) => { console.error("Error submitting attendance!", error); Swal.fire('خطأ في الشبكة', `تعذر الإرسال. ${error.message}`, 'error'); })
+        .finally(() => { submitAttendanceBtn.disabled = false; submitAttendanceBtn.textContent = "تأكيد الحضور"; });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!scriptURL || scriptURL === "YOUR_NEW_APPS_SCRIPT_URL_HERE" || scriptURL === "YOUR_APPS_SCRIPT_URL_HERE") {
+             document.body.innerHTML = `<div class="auth-container" style="text-align:center; border-color: var(--error-color);"><h1 class="app-title" style="color: var(--error-color);">خطأ إعداد!</h1><p class="app-subtitle">الرجاء تعديل <code>scriptURL</code> في HTML.</p></div>`;
+             Swal.fire({title: "خطأ إعداد", text: "الرجاء تحديث `scriptURL`.", icon: "error"});
+             return;
+         }
+      initializeTheme();
+      showScreen('login'); 
+    });
+  </script>
+</body>
+</html>
