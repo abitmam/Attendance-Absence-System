@@ -171,11 +171,9 @@
       <p class="app-subtitle">حدد الصف الذي تريد تسجيل حضوره</p>
     </div>
     <!--  الأزرار الجديدة للصفوف. يجب أن تتطابق data-classname مع أسماء الأوراق في GAS -->
-    <button class="class-btn" data-classname="عاشر أ">عاشر أ</button>
-    <button class="class-btn" data-classname="عاشر ب">عاشر ب</button>
-    <button class="class-btn" data-classname="عاشر ج">عاشر ج</button>
-    <button class="class-btn" data-classname="عاشر د">عاشر د</button>
-    <button class="class-btn" data-classname="عاشر ه">عاشر ه</button>
+    <button class="class-btn" data-classname="تاسع أ">تاسع أ</button>
+    <button class="class-btn" data-classname="تاسع ب">تاسع ب</button>
+    <button class="class-btn" data-classname="تاسع ج">تاسع ج</button>
     
     <button type="button" class="btn btn-secondary mt-3" id="backToLoginBtn">العودة لتسجيل الدخول</button>
   </div>
@@ -196,17 +194,15 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwEbovaq4-40tzKScmuW6dM-ajlIg-XL9DXJ7xuZNNyCytLHOw9sqMnchlpE1uXjbIt/exec"; // <<< ألصق هنا عنوان URL بعد نشر GAS
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwxxlVZuYntf-h16MR6KOF77TudfuJveNb6btrr4fBcjnyepSw3wt-tgkY_t3xRFywS5Q/exec"; // <<< ألصق هنا عنوان URL بعد نشر GAS
     const PRESENT_MARKER_VALUE = "حاضر"; 
 
     // تعريف أسماء الصفوف كما هي في CLASS_SHEET_NAMES في GAS وفي data-classname على الأزرار
     // هذا الكائن ليس ضروريًا للتشغيل الآن، لكنه مفيد للرجوع إليه
     const APP_CLASS_NAMES = {
-        CLASS_1: 'عاشر أ',
-        CLASS_2: 'عاشر ب',
-        CLASS_3: 'عاشر ج',
-        CLASS_4: 'عاشر د',
-        CLASS_5: 'عاشر ه'
+        CLASS_1: 'تاسع أ',
+        CLASS_2: 'تاسع ب',
+        CLASS_3: 'تاسع ج',
     };
 
     const loginContainer = document.getElementById('loginContainer');
